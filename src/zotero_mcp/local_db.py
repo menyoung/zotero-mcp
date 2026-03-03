@@ -180,9 +180,9 @@ class LocalZoteroReader:
             else:
                 max_pages_env = os.getenv("ZOTERO_PDF_MAXPAGES")
                 try:
-                    maxpages = int(max_pages_env) if max_pages_env else 10
+                    maxpages = int(max_pages_env) if max_pages_env else 50
                 except ValueError:
-                    maxpages = 10
+                    maxpages = 50
             text = extract_text(str(file_path), maxpages=maxpages)
             return text or ""
         except Exception:
@@ -251,7 +251,7 @@ class LocalZoteroReader:
             return None
         # Truncate to keep embeddings reasonable
         source = "pdf" if target.suffix.lower() == ".pdf" else ("html" if target.suffix.lower() in {".html", ".htm"} else "file")
-        return (text[:10000], source)
+        return (text[:20000], source)
 
     def close(self):
         """Close database connection."""

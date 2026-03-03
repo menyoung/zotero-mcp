@@ -637,7 +637,7 @@ class ZoteroSemanticSearch:
                 pass
 
             # Process items in batches
-            batch_size = 50
+            batch_size = 10
             # Track next milestone for progress printing (every 10 items)
             next_milestone = 10 if stats["total_items"] >= 10 else stats["total_items"]
             # Count of items seen (including skipped), used for progress milestones
