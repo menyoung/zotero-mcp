@@ -1276,7 +1276,7 @@ def batch_update_tags(
 
 @mcp.tool(
     name="zotero_advanced_search",
-    description="Perform an advanced search with multiple criteria."
+    description="Perform an advanced search with multiple criteria. Each condition dict must have keys: field, operation, value. Supported operations: is, isNot, contains, doesNotContain, beginsWith, endsWith, isGreaterThan, isLessThan, isBefore, isAfter."
 )
 def advanced_search(
     conditions: list[dict[str, str]],
@@ -1347,6 +1347,9 @@ def advanced_search(
         for i, condition in enumerate(conditions, 1):
             if not isinstance(condition, dict):
                 return f"Error: Condition {i} must be an object"
+            # Accept "operator" as alias for "operation"
+            if "operator" in condition and "operation" not in condition:
+                condition["operation"] = condition["operator"]
             if "field" not in condition or "operation" not in condition or "value" not in condition:
                 return (
                     f"Error: Condition {i} is missing required fields "
