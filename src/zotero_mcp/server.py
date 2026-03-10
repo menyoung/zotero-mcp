@@ -2653,7 +2653,7 @@ def semantic_search(
 
                 # Add abstract snippet if present
                 if abstract := data.get("abstractNote"):
-                    abstract_snippet = abstract[:1000] + "..." if len(abstract) > 1000 else abstract
+                    abstract_snippet = abstract[:200] + "..." if len(abstract) > 200 else abstract
                     output.append(f"**Abstract:** {abstract_snippet}")
 
                 # Add tags if present
@@ -2665,7 +2665,7 @@ def semantic_search(
                 # Show matched text snippet
                 matched_text = result.get("matched_text", "")
                 if matched_text:
-                    snippet = matched_text[:2000] + "..." if len(matched_text) > 2000 else matched_text
+                    snippet = matched_text[:300] + "..." if len(matched_text) > 300 else matched_text
                     output.append(f"**Matched Content:** {snippet}")
 
                 output.append("")  # Empty line between items

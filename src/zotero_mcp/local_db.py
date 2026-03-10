@@ -251,7 +251,7 @@ class LocalZoteroReader:
             return None
         # Truncate to keep embeddings reasonable
         source = "pdf" if target.suffix.lower() == ".pdf" else ("html" if target.suffix.lower() in {".html", ".htm"} else "file")
-        return (text[:20000], source)
+        return (text[:10000], source)
 
     def close(self):
         """Close database connection."""
