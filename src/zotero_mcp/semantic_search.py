@@ -167,11 +167,24 @@ class ZoteroSemanticSearch:
             extra_fields.append(tag_text)
 
         # Note content (if available)
+        import re
         if note := data.get("note"):
-            # Clean HTML from notes
-            import re
             note_text = re.sub(r'<[^>]+>', '', note)
             extra_fields.append(note_text)
+
+        # Child notes attached to this item
+        item_key = item.get("key", "")
+        if item_key and self.zotero_client:
+            try:
+                for child in self.zotero_client.children(item_key):
+                    if child.get("data", {}).get("itemType") == "note":
+                        child_note = child["data"].get("note", "")
+                        if child_note:
+                            cleaned = re.sub(r'<[^>]+>', '', child_note).strip()
+                            if cleaned:
+                                extra_fields.append(cleaned)
+            except Exception:
+                pass
 
         # Combine all text fields
         text_parts = [title, creators_text, abstract] + extra_fields
@@ -697,6 +710,19 @@ class ZoteroSemanticSearch:
                         header_parts.append(f"Authors: {format_creators(creators)}")
                     if abstract := data.get("abstractNote"):
                         header_parts.append(f"Abstract: {abstract}")
+                    # Prepend child notes into header
+                    import re
+                    if self.zotero_client:
+                        try:
+                            for child in self.zotero_client.children(item_key):
+                                if child.get("data", {}).get("itemType") == "note":
+                                    child_note = child["data"].get("note", "")
+                                    if child_note:
+                                        cleaned = re.sub(r'<[^>]+>', '', child_note).strip()
+                                        if cleaned:
+                                            header_parts.append(f"Notes: {cleaned}")
+                        except Exception:
+                            pass
                     header = "\n".join(header_parts)
                     doc_text = f"{header}\n\n{fulltext}" if header else fulltext
                 else:
