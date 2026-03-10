@@ -99,10 +99,13 @@ def get_local_zotero_client() -> zotero.Zotero | None:
         A local Zotero client instance, or None if local Zotero is not available.
     """
     try:
-        # Create a local client - library_id 0 is the default for local
+        # Respect ZOTERO_LIBRARY_ID / ZOTERO_LIBRARY_TYPE env vars so that
+        # a group-library MCP instance can access its own files.
+        library_id = os.getenv("ZOTERO_LIBRARY_ID", "0")
+        library_type = os.getenv("ZOTERO_LIBRARY_TYPE", "user")
         client = zotero.Zotero(
-            library_id="0",
-            library_type="user",
+            library_id=library_id,
+            library_type=library_type,
             api_key=None,
             local=True,
         )
