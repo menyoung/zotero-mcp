@@ -686,9 +686,21 @@ class ZoteroSemanticSearch:
                     continue
 
                 # Create document text and metadata
-                # Prefer fulltext if available, else fall back to structured fields
+                # Prefer fulltext if available, but prepend metadata header
                 fulltext = item.get("data", {}).get("fulltext", "")
-                doc_text = fulltext if fulltext.strip() else self._create_document_text(item)
+                if fulltext.strip():
+                    data = item.get("data", {})
+                    header_parts = []
+                    if title := data.get("title"):
+                        header_parts.append(f"Title: {title}")
+                    if creators := data.get("creators"):
+                        header_parts.append(f"Authors: {format_creators(creators)}")
+                    if abstract := data.get("abstractNote"):
+                        header_parts.append(f"Abstract: {abstract}")
+                    header = "\n".join(header_parts)
+                    doc_text = f"{header}\n\n{fulltext}" if header else fulltext
+                else:
+                    doc_text = self._create_document_text(item)
                 metadata = self._create_metadata(item)
 
                 if not doc_text.strip():
