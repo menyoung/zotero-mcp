@@ -180,9 +180,9 @@ class LocalZoteroReader:
             else:
                 max_pages_env = os.getenv("ZOTERO_PDF_MAXPAGES")
                 try:
-                    maxpages = int(max_pages_env) if max_pages_env else 50
+                    maxpages = int(max_pages_env) if max_pages_env else 30
                 except ValueError:
-                    maxpages = 50
+                    maxpages = 30
             text = extract_text(str(file_path), maxpages=maxpages)
             return text or ""
         except Exception:
